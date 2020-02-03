@@ -1,0 +1,20 @@
+{% extends '_layout.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Sign In</h1>
+    <form action={{ url_for('sessions.create') }} method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label for="username"> Username</label>
+            <input type="text" name="username" class="form-control">
+            <label for="password"> Password</label>
+            <input type="password" name="password" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Sign In</button>
+    </form>
+</div>
+<a style="text-decoration: none" href="{{url_for('sessions.google_login')}}">
+    <img src="/static/images/btn_google_signin_light_normal_web@2x.png" class="mt-3" width="200"/>
+</a>  
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends '_layout.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row my-5">
+        <div class="col-md-6" style="display: flex; 
+        justify-content: center;">
+            <div style="background-image: url('{{ user.profile_image_url }}');
+            width: 200px;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border:2px solid black;
+            border-radius: 50%">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div>
+                <div class="d-flex">
+                    <h3>{{ user.username }}</h3>
+                    <div class="px-3">
+                        {% if current_user != user %}
+                            {% if current_user.follow_status(user) %}
+                                {% if current_user.follow_status(user).approved %}
+                                    <a class="btn btn-outline-dark btn-sm" href="#" data-toggle="modal"
+                                        data-target="#unfollow">Following</a>
+                                {% else %}
+                                    <a class="btn btn-outline-dark btn-sm" href="#" data-toggle="modal"
+                                        data-target="#pending">Requested</a>
+                                {% endif %}
+                            {% else %}
+                                <a class="btn btn-outline-dark btn-sm"
+                                    href="{{ url_for('follows.create',idol_id=user.id) }}">Follow</a>
+                            {% endif %}
+                        {% else %}
+                            <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('users.edit',id=current_user.id) }}">Edit</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <h5>{{ user.email }}</h5>
+            </div>
+
+            <div class="mr-5 my-5">
+                <div class="container" style="display: flex; justify-content: space-between;">
+                    <div class="text-center">
+                        <p>Posts</p>
+                        <p>{{ user.images | length }}</p>
+                    </div>
+                    <div class="text-center">
+                        <p>Followings</p>
+                        <p>{{ user.followings | length }}</p>
+                    </div>
+                    <div class="text-center">
+                        <p>Followers</p>
+                        <p>{{ user.followers | length }}</p>
+                    </div>
+                    <div class="text-center">
+                        <p>Likes</p>
+                        <p>0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container mt-5">
+        {% if current_user==user or user.private==False or current_user.follow_status(user).approved %}
+        <div class="row mt-3">
+            {% for image in images %}
+            <div class="col-md-4 mb-5">
+                <div class="card">
+                    <div class="card-image">
+                        <div style="background-image: url('{{ image.image_url }}');
+                    background-size: cover; 
+                    background-repeat: no-repeat;
+                    padding-top: 90%;
+                    background-position: center;">
+                        </div>
+                    </div>
+                    {% if current_user != user %}
+                    <a href="{{ url_for('donations.new',id=image.id) }}" class="btn btn-primary">Donate</a>
+                    <p class="text-center">Donations: ${{ image.donations | sum(attribute='amount')}}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <h5 class="text-center text-secondary mt-5">Follow @{{ user.username }} to view profile.</h5>
+        {% endif %}
+    </div>
+
+    <div class="modal fade" id="pending" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-body text-center">
+              <img src="{{user.profile_image_url }}" width="100" class="rounded-circle my-3" alt="profile_image" />
+              <p>Are you sure you want to unfollow <strong>@{{user.username}}</strong>, you'll have to request to follow again if you wish to see.</p>
+              <a href="{{url_for('follows.unfollow',idol_id=user.id)}}" class="btn btn-primary">Unfollow</a>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="unfollow" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-body text-center">
+              <img src="{{user.profile_image_url }}" width="100" class="rounded-circle my-3" alt="profile_image" />
+              <p>Unfollow <strong>@{{user.username}}</strong>?</p>
+              <a href="{{url_for('follows.unfollow',idol_id=user.id)}}" class="btn btn-primary">Unfollow</a>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+
+{% endblock %}

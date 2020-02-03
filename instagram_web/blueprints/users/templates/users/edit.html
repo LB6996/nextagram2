@@ -1,0 +1,104 @@
+{% extends '_layout.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Update profile</h1>
+    <form action={{ url_for('users.update',id=current_user.id) }} method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" class="form-control">
+            <label for="password">password</label>
+            <input type="password" name="password" class="form-control">
+            <br>
+            <h2>Personal information</h2>
+            <label for="first_name"">First name</label>
+            <input type=" text" name="first_name" class="form-control">
+            <label for="last_name"">Last name</label>
+            <input type=" text" name="last_name" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+    
+    <form action="{{ url_for('users.upload') }}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <br>
+        <h2>Upload profile image</h2>
+        <div class="input-group">
+            <div class="custom-file">
+                <input type="file" id="customFile" class="custom-file-input" name="user_file" id="inputGroupFile04"
+                    aria-describedby="inputGroupFileAddon04">
+                <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
+            </div>
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit" id="inputGroupFileAddon04">Upload</button>
+            </div>
+        </div>
+    </form>
+
+    <form action="{{ url_for('images.upload') }}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <br>
+        <h2>Upload user images</h2>
+        <div class="input-group">
+            <div class="custom-file">
+                <input type="file" id="customFile" class="custom-file-input" name="user_file" id="inputGroupFile04"
+                    aria-describedby="inputGroupFileAddon04">
+                <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
+            </div>
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit" id="inputGroupFileAddon04">Upload</button>
+            </div>
+        </div>
+    </form>
+
+
+    <!-- code beyond this point is all from jinqwen's. -->
+<!-- 
+    <form action="{#{{ url_for('users.upload') }}#}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="px-0">
+            <label for="password">Profile image :</label>
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" id="customFile" class="custom-file-input" name="user_file" id="inputGroupFile04"
+                        aria-describedby="inputGroupFileAddon04">
+                    <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
+                </div>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-success" type="submit" id="inputGroupFileAddon04">Upload</button>
+                </div>
+            </div>
+        </div>
+        <div class="text-center rounded mt-4">
+            <img id="image" width="400" />
+        </div>
+    </form>
+</div>
+<script>
+    let editButtons = document.getElementsByClassName('edit')
+    for (let i = 0; i < editButtons.length; i++) {
+        editButtons[i].addEventListener('click', function (e) {
+            if (e.target.previousElementSibling.hasAttribute('disabled')) {
+                e.target.previousElementSibling.removeAttribute('disabled')
+            }
+            else {
+                e.target.previousElementSibling.setAttribute('disabled', true)
+            }
+        })
+    }
+    // live preview image
+    document.getElementById("customFile").onchange = function () {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById("image").src = e.target.result;
+        };
+        reader.readAsDataURL(this.files[0]);
+    };
+    $('.custom-file-input').on('change', function () {
+        let fileName = $(this).val().split('\\').pop();
+        $(this).next('.custom-file-label').addClass("selected").html(fileName);
+    });
+</script> -->
+
+{% endblock %}

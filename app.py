@@ -2,6 +2,9 @@ import os
 import config
 from flask import Flask
 from models.base_model import db
+from models.user import User
+from flask_wtf.csrf import CSRFProtect
+from flask_login import LoginManager
 
 web_dir = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'instagram_web')
@@ -12,6 +15,17 @@ if os.getenv('FLASK_ENV') == 'production':
     app.config.from_object("config.ProductionConfig")
 else:
     app.config.from_object("config.DevelopmentConfig")
+
+csrf = CSRFProtect()
+csrf.init_app(app)
+
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get_by_id(user_id)
 
 
 @app.before_request
@@ -25,3 +39,6 @@ def _db_close(exc):
         print(db)
         print(db.close())
     return exc
+
+
+

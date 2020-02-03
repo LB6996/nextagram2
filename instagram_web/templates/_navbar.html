@@ -1,0 +1,65 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{{ url_for('home') }}">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <form class="form-inline my-2 my-lg-0 ml-auto">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        {% if current_user.is_authenticated %}
+        <ul class="navbar-nav mx-2">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    {{ current_user.username }}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{ url_for('users.show',username = current_user.username) }}">View profile</a>
+                    <a class="dropdown-item" href="{{ url_for('users.edit',id=current_user.id) }}">Edit profile</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Requests
+                </a>
+                <div class="dropdown-menu">
+                    <h6 class="dropdown-item disabled" aria-labelledby="navbarDropdown">
+                        {{ current_user.get_request|length }} requests</h6>
+                    {% for request in current_user.get_request %}
+                    <div class="dropdown-item">
+                        <a href="{{ url_for('users.show',username=request.fan.username) }}">
+                            <img src="{{ request.fan.profile_image_url }}" width="50"
+                                class="img-thumbnail rounded-circle">
+                            <span>{{ request.fan.username }}</span>
+                        </a>
+                        <div>
+                            <a class="btn btn-primary btn-sm"
+                                href="{{ url_for('follows.update',fan_id=request.fan.id) }}">Confirm</a>
+                            <a class="btn btn-dark btn-sm"
+                                href="{{ url_for('follows.destroy',fan_id=request.fan.id) }}">Delete</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('sessions.logout') }}">Log Out</a>
+            </li>
+        </ul>
+        {% else %}
+        <ul class="navbar-nav mx-2">
+            <li class="nav-item">
+                <a class="nav-link" href={{ url_for('sessions.login') }}>Log In</a>
+            </li>
+            <li class="nav-item mx-2">
+                <a class="nav-link" href={{ url_for('users.sign_up') }}>Sign Up</a>
+            </li>
+        </ul>
+        {% endif %}
+    </div>
+</nav>

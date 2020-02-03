@@ -1,0 +1,21 @@
+{% extends '_layout.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Sign Up</h1>
+    <form action={{ url_for('users.create') }} method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label for="username">Username :</label>
+            <input type="text" name="username" class="form-control" />
+            <label for="email">Email :</label>
+            <input type="email" name="email" class="form-control" />
+            <label for="password">Password :</label>
+            <input type="password" name="password" class="form-control" />
+            <label for="cfm-password">Confirm Password :</label>
+            <input type="password" name="cfm-password" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+    </form>
+</div>
+{% endblock %}
