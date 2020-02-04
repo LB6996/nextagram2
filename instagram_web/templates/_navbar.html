@@ -24,24 +24,25 @@
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">Requests
+                    aria-haspopup="true" aria-expanded="false">{{ current_user.get_request|length }} Requests
                 </a>
                 <div class="dropdown-menu">
-                    <h6 class="dropdown-item disabled" aria-labelledby="navbarDropdown">
+                    <h6 class="dropdown-item disabled text-center" aria-labelledby="navbarDropdown">
                         {{ current_user.get_request|length }} requests</h6>
                     {% for request in current_user.get_request %}
                     <div class="dropdown-item">
                         <a href="{{ url_for('users.show',username=request.fan.username) }}">
                             <img src="{{ request.fan.profile_image_url }}" width="50"
                                 class="img-thumbnail rounded-circle">
-                            <span>{{ request.fan.username }}</span>
+                            <span class="px-2">{{ request.fan.username }}</span>
                         </a>
-                        <div>
+                        <div class="py-3">
                             <a class="btn btn-primary btn-sm"
                                 href="{{ url_for('follows.update',fan_id=request.fan.id) }}">Confirm</a>
                             <a class="btn btn-dark btn-sm"
                                 href="{{ url_for('follows.destroy',fan_id=request.fan.id) }}">Delete</a>
                         </div>
+                        <div class="dropdown-divider"></div>
                     </div>
                     {% endfor %}
                 </div>

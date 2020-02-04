@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models.user import User
 from models.image import Image
-from flask_login import current_user,login_required
+from flask_login import current_user,login_required, login_user
 from instagram_web.util.helpers import upload_file_to_s3
 from werkzeug.utils import secure_filename
 import datetime
@@ -26,18 +26,20 @@ def create():
     password = request.form.get('password')
     cfm_password = request.form.get('cfm_password')
 
-    # if password == cfm_password:
-    user = User(username=username, email=email, password=password, cfm_password=cfm_password)
-    if user.save():
-        flash('Successfully registered', 'alert alert-success')
-        return redirect(url_for('home'))
+    if password == cfm_password:
+        user = User(username=username, email=email, password=password, cfm_password=cfm_password)
+        if user.save():
+            flash('Successfully registered', 'alert alert-success')
+            # return redirect(url_for('home'))
+            login_user(user)
+            return redirect(url_for('users.show',username=username))
+        else:
+            for error in user.errors:
+                flash(error,'alert alert-danger')
+            return render_template('users/sign_up.html')
     else:
-        for error in user.errors:
-            flash(error,'alert alert-danger')
+        flash('Password confirmation does not match!','alert alert-danger')
         return render_template('users/sign_up.html')
-    # else:
-    #     flash('Password confirmation is not matching!','alert alert-danger')
-    #     return render_template('users/sign_up.html')
 
 
 @users_blueprint.route('/<username>', methods=["GET"])
